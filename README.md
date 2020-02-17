@@ -11,3 +11,9 @@ supported formats eps, pdf, pgf, png, ps, raw, rgba, svg, svgz (depends on versi
 
 the code is written based on IDL code provided by Chris Meek
 IDL code originally written by Ian Grant and modified by the same and JWM
+
+An example datafile (testdata.md49) is included in the repository.
+
+Example: python rdatafile.py testdata.md49 output.png
+
+will result in the output.png file.
