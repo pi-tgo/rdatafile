@@ -157,7 +157,7 @@ ax.set_xlim(1,10)                  # set X limits (min and max frequency in MHz)
 ax.set_ylim(0,800)                 # set Y limits (min and max height in km)
 ax.set_title(title) 
 ax.set_xlabel('Frequency (Mhz)') 
-ax.set_ylabel('Height (km)') 
+ax.set_ylabel('Virtual height (km)') 
 
 # toggle output to file, comment/uncomment these lines 
 # if you don't want output to file: usage: python rdatafile.py inputfile
