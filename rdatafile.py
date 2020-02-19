@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 # this code is written for python >= 3.6 and require matplotlib and numpy
-# usage: rdatafile.py inputfile outputfile
+# usage: python rdatafile.py inputfile outputfile
 # inputfile = file name of the CADI data input file
 # outputfile = file name of the resulting plot
 #
@@ -159,16 +159,12 @@ ax.set_title(title)
 ax.set_xlabel('Frequency (Mhz)') 
 ax.set_ylabel('Height (km)') 
 
-# the usage for output to screen is:
-#
-# python rdata.py inputfile
-# 
-# if you want to plot to file to screen, comment the next two lines
+# toggle output to file, comment/uncomment these lines 
+# if you don't want output to file: usage: python rdatafile.py inputfile
 
 savefilename = sys.argv[2]
 fig.savefig(savefilename)
 
-# and uncomment the next line if you want output to screen
-
+# toggle output to screen, comment/uncomment the next line (note you can have both!)
 #plt.show()
 
