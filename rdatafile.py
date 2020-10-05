@@ -12,6 +12,8 @@
 # IDL code originally written by Ian Grant and modified by the same and JWM
 #
 
+import math
+from statistics import median
 import sys
 import struct
 import datetime
@@ -29,6 +31,11 @@ max_ndopbins = 300000
 dheight = 3.0  # not defined in data file
 
 f = open(sys.argv[1], "rb")
+
+f.seek(-1,2)     # go to the file end.
+eof = f.tell()   # get the end of file location
+f.seek(0,0)      # go back to file beginning
+
 try:
     # 1) read header information as described in the documentation p. 26-27
     site = f.read(3).decode("utf-8")
@@ -96,6 +103,7 @@ try:
     dopbin_x_hflag = []
     dopbin_x_dop_flag = []
     dopbin_iq = []
+    meanpower = []
     hflag = 0
 
     time_min = struct.unpack("<B", f.read(1))[0]
@@ -130,7 +138,9 @@ try:
                     dopbin_x_hflag.append(hflag)
                     dopbin_x_dop_flag.append(dop_flag)
                 flag = struct.unpack("<B", f.read(1))[0]  # next hflag/gainflag/FF
-        time_min = flag  # next record
+        time_min = flag
+        if ((f.tell() - 1) != eof):
+            time_min = struct.unpack("<B", f.read(1))[0]  # next record
 finally:
     f.close()
 
@@ -139,6 +149,20 @@ finally:
 # frebins_noise_power10[] is the 10 x averagenoisepower for each frequency
 
 # dopbin_iq[] is an array of real and imaginary components for the receivers
+
+# calculate average power
+for idx in range(len(dopbin_iq)):
+    absvalue1 = math.sqrt((dopbin_iq[idx][0][0] - 128) ** 2 + (dopbin_iq[idx][0][1] - 128) ** 2)
+    absvalue2 = math.sqrt((dopbin_iq[idx][1][0] - 128) ** 2 + (dopbin_iq[idx][1][1] - 128) ** 2)
+    absvalue3 = math.sqrt((dopbin_iq[idx][2][0] - 128) ** 2 + (dopbin_iq[idx][2][1] - 128) ** 2)
+    absvalue4 = math.sqrt((dopbin_iq[idx][3][0] - 128) ** 2 + (dopbin_iq[idx][3][1] - 128) ** 2)
+    mvalue = median([absvalue1, absvalue2, absvalue3,absvalue4])
+    # mvalue = (absvalue1 + absvalue2 + absvalue3 + absvalue4) / 4.
+    if mvalue == 0:
+        power = 0
+    else:
+        power = 20 * math.log10(mvalue)
+    meanpower.append(power)
 
 # frequency in MHz
 frequency = []
@@ -153,14 +177,20 @@ height = list(np.array(dopbin_x_hflag) * 3)
 title = 'CADI ionogram ' + site + ' - ' + ascii_datetime[1:21] + ' UTC'
 
 fig, ax = plt.subplots()
-plt.scatter(frequency, height, s=1)
+
+cm = plt.cm.get_cmap('jet')
+
+sc = plt.scatter(frequency, height, s=1, c=meanpower, cmap=cm)
 ax.grid(True, which='both')
 
-ax.set_xlim(1, 10)  # set X limits (min and max frequency in MHz)
-ax.set_ylim(0, 800)  # set Y limits (min and max height in km)
+ax.set_xlim(0, math.floor(max(frequency) + 1))  # set X limits (min and max frequency in MHz)
+ax.set_ylim(0, math.floor((maxheight + 100)/100) * 100)  # set Y limits (min and max height in km)
 ax.set_title(title)
 ax.set_xlabel('Frequency (Mhz)')
 ax.set_ylabel('Virtual height (km)')
+# plt.clim(43,45)
+cbar = plt.colorbar(sc)
+cbar.set_label('Power (dB)')
 
 # toggle output to file, comment/uncomment these lines 
 # if you don't want output to file: usage: python rdatafile.py inputfile
