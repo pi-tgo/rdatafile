@@ -1,14 +1,18 @@
 #!/usr/bin/env python
 
-# this code is written for python >= 3.6 and require matplotlib and numpy
-# usage: python rdatafile.py inputfile outputfile
+# This code is written for python >= 3.6 and require matplotlib and numpy
+# Usage: python rdatafile.py inputfile outputfile
 # inputfile = file name of the CADI data input file
 # outputfile = file name of the resulting plot
 #
 # outputfile should have extension .png to produce png-files or .pdf to produce pdf-files.
 # supported formats eps, pdf, pgf, png, ps, raw, rgba, svg, svgz (depends on version of matplotlib)
 #
-# the code is written based on IDL code provided by Chris Meek
+# This program is written for datafiles that contain a single ionogram.
+# Please use the rdatafile-mdx.py if you want to plot single ionograms from a datafile that contain several
+# ionograms.
+#
+# The code is written based on IDL code provided by Chris Meek
 # IDL code originally written by Ian Grant and modified by the same and JWM
 #
 
@@ -192,11 +196,11 @@ ax.set_ylabel('Virtual height (km)')
 cbar = plt.colorbar(sc)
 cbar.set_label('Power (dB)')
 
-# toggle output to file, comment/uncomment these lines 
+# toggle output to file, comment/uncomment these lines
 # if you don't want output to file: usage: python rdatafile.py inputfile
 
 savefilename = sys.argv[2]
 fig.savefig(savefilename)
 
 # toggle output to screen, comment/uncomment the next line (note you can have both!)
-# plt.show()
+plt.show()
