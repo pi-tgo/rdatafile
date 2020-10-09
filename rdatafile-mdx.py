@@ -15,8 +15,9 @@
 # The number of ionograms to plot is used in case the data contain several ionograms. If it only contain one,or fewer
 # than the number of ionograms to plot, the program will only plot the ones it can.
 #
-# The code is written based on IDL code provided by Chris Meek
-# IDL code originally written by Ian Grant and modified by the same and JWM
+# The code is written based on IDL code obtained from the Canadian High Arctic Ionospheric Network (CHAIN) web pages;
+# http://chain.physics.unb.ca/chain/.
+# IDL code originally written by Ian Grant and modified by the same and JWM.
 #
 
 import math

@@ -12,8 +12,9 @@
 # Please use the rdatafile-mdx.py if you want to plot single ionograms from a datafile that contain several
 # ionograms.
 #
-# The code is written based on IDL code provided by Chris Meek
-# IDL code originally written by Ian Grant and modified by the same and JWM
+# The code is written based on IDL code obtained from the Canadian High Arctic Ionospheric Network (CHAIN) web pages;
+# http://chain.physics.unb.ca/chain/.
+# IDL code originally written by Ian Grant and modified by the same and JWM.
 #
 
 import math
