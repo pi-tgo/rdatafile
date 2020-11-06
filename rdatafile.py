@@ -109,6 +109,7 @@ try:
     dopbin_x_dop_flag = []
     dopbin_iq = []
     meanpower = []
+    frequency = []
     hflag = 0
 
     time_min = struct.unpack("<B", f.read(1))[0]
@@ -157,10 +158,17 @@ finally:
 
 # calculate average power
 for idx in range(len(dopbin_iq)):
-    absvalue1 = math.sqrt((dopbin_iq[idx][0][0] - 128) ** 2 + (dopbin_iq[idx][0][1] - 128) ** 2)
-    absvalue2 = math.sqrt((dopbin_iq[idx][1][0] - 128) ** 2 + (dopbin_iq[idx][1][1] - 128) ** 2)
-    absvalue3 = math.sqrt((dopbin_iq[idx][2][0] - 128) ** 2 + (dopbin_iq[idx][2][1] - 128) ** 2)
-    absvalue4 = math.sqrt((dopbin_iq[idx][3][0] - 128) ** 2 + (dopbin_iq[idx][3][1] - 128) ** 2)
+
+    # transform coordinates
+    for rec in range(noofreceivers):
+        for comp in range(2):
+            if dopbin_iq[idx][rec][comp] > 127:
+                dopbin_iq[idx][rec][comp] = dopbin_iq[idx][rec][comp] - 256
+
+    absvalue1 = math.sqrt((dopbin_iq[idx][0][0]) ** 2 + (dopbin_iq[idx][0][1]) ** 2)
+    absvalue2 = math.sqrt((dopbin_iq[idx][1][0]) ** 2 + (dopbin_iq[idx][1][1]) ** 2)
+    absvalue3 = math.sqrt((dopbin_iq[idx][2][0]) ** 2 + (dopbin_iq[idx][2][1]) ** 2)
+    absvalue4 = math.sqrt((dopbin_iq[idx][3][0]) ** 2 + (dopbin_iq[idx][3][1]) ** 2)
     mvalue = median([absvalue1, absvalue2, absvalue3,absvalue4])
     # mvalue = (absvalue1 + absvalue2 + absvalue3 + absvalue4) / 4.
     if mvalue == 0:
@@ -168,11 +176,7 @@ for idx in range(len(dopbin_iq)):
     else:
         power = 20 * math.log10(mvalue)
     meanpower.append(power)
-
-# frequency in MHz
-frequency = []
-for i in range(len(dopbin_x_freqx)):
-    frequency.append(freqs[dopbin_x_freqx[i]] / 1000000.0)
+    frequency.append(freqs[dopbin_x_freqx[idx]] / 1000000.0)
 
 # height in km
 height = list(np.array(dopbin_x_hflag) * 3)

@@ -166,13 +166,24 @@ num_of_ionograms = min(timex, number_of_ionograms_to_plot - 1) + 1
 for j in range(num_of_ionograms):
     # calculate average power
     block = timex - j
+
     meanpower = []
+    frequency = []
+    height = []
+
     for idx in range(len(dopbin_iq)):
         if dopbin_x_timex[idx] == int(block):
-            absvalue1 = math.sqrt((dopbin_iq[idx][0][0] - 128) ** 2 + (dopbin_iq[idx][0][1] - 128) ** 2)
-            absvalue2 = math.sqrt((dopbin_iq[idx][1][0] - 128) ** 2 + (dopbin_iq[idx][1][1] - 128) ** 2)
-            absvalue3 = math.sqrt((dopbin_iq[idx][2][0] - 128) ** 2 + (dopbin_iq[idx][2][1] - 128) ** 2)
-            absvalue4 = math.sqrt((dopbin_iq[idx][3][0] - 128) ** 2 + (dopbin_iq[idx][3][1] - 128) ** 2)
+
+            # transform coordinates
+            for rec in range(noofreceivers):
+                for comp in range(2):
+                    if dopbin_iq[idx][rec][comp] > 127:
+                        dopbin_iq[idx][rec][comp] = dopbin_iq[idx][rec][comp] - 256
+
+            absvalue1 = math.sqrt((dopbin_iq[idx][0][0]) ** 2 + (dopbin_iq[idx][0][1]) ** 2)
+            absvalue2 = math.sqrt((dopbin_iq[idx][1][0]) ** 2 + (dopbin_iq[idx][1][1]) ** 2)
+            absvalue3 = math.sqrt((dopbin_iq[idx][2][0]) ** 2 + (dopbin_iq[idx][2][1]) ** 2)
+            absvalue4 = math.sqrt((dopbin_iq[idx][3][0]) ** 2 + (dopbin_iq[idx][3][1]) ** 2)
             mvalue = median([absvalue1, absvalue2, absvalue3,absvalue4])  # median
             # mvalue = (absvalue1 + absvalue2 + absvalue3 + absvalue4) / 4. # mean
             if mvalue == 0:
@@ -180,14 +191,8 @@ for j in range(num_of_ionograms):
             else:
                 power = 20 * math.log10(mvalue)
             meanpower.append(power)
-
-    # frequency in MHz
-    frequency = []
-    height = []
-    for i in range(len(dopbin_x_freqx)):
-        if dopbin_x_timex[i] == int(block):
-            frequency.append(freqs[dopbin_x_freqx[i]] / 1000000.0)
-            height.append(dopbin_x_hflag[i] * 3)
+            frequency.append(freqs[dopbin_x_freqx[idx]] / 1000000.0)
+            height.append(dopbin_x_hflag[idx] * 3)
 
     # plotting
 
